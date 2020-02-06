@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorBackGround"
+    android:orientation="vertical">
+   <FrameLayout
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content">
+       <VideoView
+           android:id="@+id/videoViewContent"
+           android:layout_width="match_parent"
+           android:layout_height="300dp"
+           tools:ignore="MissingConstraints" />
+       <ImageView
+           android:id="@+id/btnBack"
+           android:layout_marginStart="20dp"
+           android:layout_marginTop="20dp"
+           android:src="@drawable/ic_arrow_back_black_24dp"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"/>
+   </FrameLayout>
+
+    <TextView
+        android:layout_marginTop="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/colorWhite"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        android:background="@color/colorRed"
+        android:text="Actors : "
+        tools:ignore="MissingConstraints" />
+
+    <TextView
+        android:id="@+id/textActors"
+        android:paddingStart="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/colorWhite"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        android:text="Al Pacino, Robert Duvall, Diane Keaton, Robert De Niro"
+        tools:ignore="MissingConstraints" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Plot : "
+        android:textColor="@color/colorWhite"
+        android:textSize="30sp"
+        android:background="@color/colorRed"
+        android:textStyle="bold"
+        tools:ignore="MissingConstraints" />
+
+    <TextView
+        android:id="@+id/textPlot"
+        android:layout_margin="5dp"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        android:textColor="@color/colorWhite"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="20dp"
+        android:text="The early life and career of Vito Corleone in 1920s New York City is portrayed, while his son, Michael, expands and tightens his grip on the family crime syndicate."
+
+        tools:ignore="MissingConstraints" />
+</LinearLayout>

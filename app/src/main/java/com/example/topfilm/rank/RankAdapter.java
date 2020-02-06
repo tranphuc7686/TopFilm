@@ -96,38 +96,38 @@ import java.util.List;
 public class RankAdapter extends PagerAdapter {
     private LayoutInflater mInflater;
     private List<Film> films;
+    private Callback callback;
 
-    public RankAdapter(List<Film> films) {
+    public RankAdapter(List<Film> films,Callback callback) {
         this.films = films;
+        this.callback = callback;
     }
 
     @Override
     public Object instantiateItem(ViewGroup container, final int position) {
         mInflater = (LayoutInflater) container.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = mInflater.inflate(R.layout.item_rank, container, false);
-//        view.setOnClickListener(new View.OnClickListener(){
-//            public void onClick(View v){
-//                //this will log the page number that was click
-//                Intent mainIntent = new Intent(CategoryActivity.this, MainActivity.class);
-//                mainIntent.putExtra("id",position);
-//                startActivity(mainIntent);
-//            }
-//        });
-        Film film = films.get(position);
-         VideoView videoView = view.findViewById(R.id.imgFilm);
-        String uriPath = "https://www.demonuts.com/Demonuts/smallvideo.mp4"; //update package name
-        videoView.setVideoURI(Uri.parse(uriPath));
-        videoView.start();
-
-
+        final Film film = films.get(position);
+        view.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View v){
+                //this will log the page number that was click
+                callback.onClickItem(film);
+            }
+        });
+        Picasso.get()
+                .load(film.getUrl())
+                .placeholder(R.drawable.splash_sreen)
+                .into((ImageView) view.findViewById(R.id.imgFilm));
         Picasso.get()
                 .load(film.getUrl())
                 .placeholder(R.drawable.splash_sreen)
                 .into((ImageView) view.findViewById(R.id.imgThumbnail));
-        ((TextView)view.findViewById(R.id.txtNameFilm)).setText(film.getName());
-        ((TextView)view.findViewById(R.id.txtNameFilmThubnail)).setText(film.getName());
+        String nameFilm = film.getName().length() > 17 ? film.getName().substring(0,17) +"..." : film.getName();
+        ((TextView)view.findViewById(R.id.txtNameFilm)).setText(nameFilm);
+        ((TextView)view.findViewById(R.id.txtNameFilmThubnail)).setText(nameFilm);
         ((TextView)view.findViewById(R.id.txtPoint)).setText(film.getPoint() + "");
         ((TextView)view.findViewById(R.id.txtRank)).setText(position + 1 + "");
+
         container.addView(view);
         return view;
     }

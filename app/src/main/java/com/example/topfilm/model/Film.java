@@ -2,12 +2,12 @@ package com.example.topfilm.model;
 
 public class Film {
     private int id;
-    private int point;
+    private String point;
     private String name;
     private String introduce;
     private String url;
 
-    public Film(int id, int point, String name, String introduce, String url) {
+    public Film(int id, String point, String name, String introduce, String url) {
         this.id = id;
         this.point = point;
         this.name = name;
@@ -23,11 +23,11 @@ public class Film {
         this.id = id;
     }
 
-    public int getPoint() {
+    public String getPoint() {
         return point;
     }
 
-    public void setPoint(int point) {
+    public void setPoint(String point) {
         this.point = point;
     }
 

@@ -14,6 +14,7 @@ import android.view.WindowManager;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
 
+import com.example.topfilm.NetworkHelper;
 import com.example.topfilm.R;
 import com.example.topfilm.model.Category;
 import com.example.topfilm.rank.RankActivity;
@@ -47,7 +48,7 @@ public class CategoryActivity extends AppCompatActivity implements CategoryAdapt
 
     private ArrayList<Category> createCategories() {
         ArrayList<Category> resulf = new ArrayList<>();
-        resulf.add(new Category(1, "Phim Bộ", "https://i.ytimg.com/vi/rmPP-DRqEf0/maxresdefault.jpg"));
+        resulf.add(new Category(0, "Phim Bộ", "https://i.ytimg.com/vi/rmPP-DRqEf0/maxresdefault.jpg"));
         resulf.add(new Category(1, "Phim Lẻ", "https://images3.alphacoders.com/746/746551.jpg"));
         return resulf;
     }

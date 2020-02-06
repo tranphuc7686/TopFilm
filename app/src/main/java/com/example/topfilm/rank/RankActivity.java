@@ -2,39 +2,40 @@ package com.example.topfilm.rank;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
+import android.widget.ImageView;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
+import com.example.topfilm.NetworkHelper;
 import com.example.topfilm.R;
+import com.example.topfilm.category.CategoryActivity;
+import com.example.topfilm.details.DetailActivity;
 import com.example.topfilm.model.Film;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class RankActivity extends AppCompatActivity implements RankAdapter.Callback {
     private ViewPager viewPager;
     private RankAdapter rankAdapter;
     private List<Film> films;
-
+    private final int PHIM_BO = 0;
+    private final int PHIM_LE = 1;
+    private ImageView btnBack;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        requestAppPermissions();
         Window window = this.getWindow();
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
@@ -43,13 +44,24 @@ public class RankActivity extends AppCompatActivity implements RankAdapter.Callb
         }
         setContentView(R.layout.activity_rank);
         addControl();
+        addListener();
+    }
+
+    private void addListener() {
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
     }
 
     private void addControl() {
-        films = createFilms();
+        getDataFilms();
         viewPager = findViewById(R.id.viewPaperRank);
+        btnBack = findViewById(R.id.btnBack);
 
-        setUpViewPager();
+
     }
 
     private int getIntentRedirect() {
@@ -57,23 +69,45 @@ public class RankActivity extends AppCompatActivity implements RankAdapter.Callb
         return extras.getInt("CTG_ID");
     }
 
-    private ArrayList<Film> createFilms() {
-        ArrayList<Film> resulf = new ArrayList<>();
-        resulf.add(new Film(1, 1, "Cô Dâu 8 tuổi", "", "https://i.ytimg.com/vi/iO4MaSmuxTs/maxresdefault.jpg"));
-        resulf.add(new Film(1, 2, "Cô Dâu 8 tuổi", "", "https://i.ytimg.com/vi/0BJMwNHLexU/maxresdefault.jpg"));
-        resulf.add(new Film(1, 3, "Cô Dâu 8 tuổi", "", "https://i.pinimg.com/originals/0c/8a/64/0c8a64202094667fcefe38ba9e65f6f4.jpg"));
-        resulf.add(new Film(1, 4, "Cô Dâu 8 tuổi", "", "https://i.ytimg.com/vi/iO4MaSmuxTs/maxresdefault.jpg"));
-        resulf.add(new Film(1, 5, "Cô Dâu 8 tuổi", "", "https://i.ytimg.com/vi/0BJMwNHLexU/maxresdefault.jpg"));
-        resulf.add(new Film(1, 6, "Cô Dâu 8 tuổi", "", "https://i.pinimg.com/originals/0c/8a/64/0c8a64202094667fcefe38ba9e65f6f4.jpg"));
-        resulf.add(new Film(1, 7, "Cô Dâu 8 tuổi", "", "https://i.ytimg.com/vi/iO4MaSmuxTs/maxresdefault.jpg"));
-        resulf.add(new Film(1, 8, "Cô Dâu 8 tuổi", "", "https://i.ytimg.com/vi/0BJMwNHLexU/maxresdefault.jpg"));
-        resulf.add(new Film(1, 9, "Cô Dâu 8 tuổi", "", "https://i.pinimg.com/originals/0c/8a/64/0c8a64202094667fcefe38ba9e65f6f4.jpg"));
-        resulf.add(new Film(1, 10, "Cô Dâu 8 tuổi", "", "https://i.pinimg.com/originals/0c/8a/64/0c8a64202094667fcefe38ba9e65f6f4.jpg"));
-        return resulf;
+    private void getDataFilms() {
+        switch ( getIntentRedirect()){
+            case PHIM_BO :{
+                NetworkHelper.GetJsonData("https://firebasestorage.googleapis.com/v0/b/light-sleep.appspot.com/o/categoryphimbo.json?alt=media&token=4568cc98-d237-48a0-8539-13ad34914929", new NetworkHelper.Callback() {
+                    @Override
+                    public void getStringJson(String json) {
+                        films = RankHepler.parseJsonToFilm(json);
+                        setUpViewPager();
+                    }
+
+                    @Override
+                    public void getStringJsonError(String msg) {
+                        System.out.println(msg);
+                    }
+                });
+                break;
+            }
+            case PHIM_LE:{
+                NetworkHelper.GetJsonData("https://firebasestorage.googleapis.com/v0/b/light-sleep.appspot.com/o/categoryphimle.json?alt=media&token=aa4b644e-d1ab-48e5-84aa-8998b5ba1bac", new NetworkHelper.Callback() {
+                    @Override
+                    public void getStringJson(String json) {
+                        films = RankHepler.parseJsonToFilm(json);
+                        setUpViewPager();
+                    }
+
+                    @Override
+                    public void getStringJsonError(String msg) {
+                        System.out.println(msg);
+                    }
+                });
+                break;
+            }
+        }
+
+
     }
 
     private void setUpViewPager() {
-        rankAdapter = new RankAdapter(films);
+        rankAdapter = new RankAdapter(films,this);
         viewPager.setAdapter(rankAdapter);
         runLayoutAnimation(viewPager);
 
@@ -91,31 +125,12 @@ public class RankActivity extends AppCompatActivity implements RankAdapter.Callb
 
     @Override
     public void onClickItem(Film Film) {
-
+        Intent mainIntent = new Intent(RankActivity.this, DetailActivity.class);
+        mainIntent.putExtra("FILM_NAME",Film.getName());
+        mainIntent.putExtra("FILM_TRAILLER",Film.getIntroduce());
+        startActivity(mainIntent);
     }
 
-    private void requestAppPermissions() {
-        if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            return;
-        }
 
-        if (hasReadPermissions() && hasWritePermissions()) {
-            return;
-        }
-
-        ActivityCompat.requestPermissions(this,
-                new String[]{
-                        Manifest.permission.READ_EXTERNAL_STORAGE,
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE
-                }, 777); // your request code
-    }
-
-    private boolean hasReadPermissions() {
-        return (ContextCompat.checkSelfPermission(getBaseContext(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED);
-    }
-
-    private boolean hasWritePermissions() {
-        return (ContextCompat.checkSelfPermission(getBaseContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED);
-    }
 }
 
